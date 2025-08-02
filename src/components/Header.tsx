@@ -1,20 +1,23 @@
-import { useState } from "react";
-import { Sun, Moon, Search, Menu } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Sun, Moon, Search, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useTheme } from "next-themes";
 
 export function Header() {
-  const [darkMode, setDarkMode] = useState(false);
+  const { theme, setTheme } = useTheme();
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const navItems = [
     { name: "Home", href: "/" },
+    { name: "Blogs", href: "/blogs" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
     { name: "Exclusives", href: "/exclusives" },
     { name: "Podcasts", href: "/podcasts" },
     { name: "Vision", href: "/vision" },
@@ -26,15 +29,22 @@ export function Header() {
     { name: "Guides", href: "/guides" },
   ];
 
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
-        <div className="mr-4 hidden md:flex">
+        <div className="mr-4 flex items-center">
           <a href="/" className="mr-6 flex items-center space-x-2">
-            <span className="font-bold text-xl">SecretNamespace</span>
+            <div className="h-8 w-8 bg-primary rounded-md flex items-center justify-center text-white font-bold">
+              SN
+            </div>
+            <span className="font-bold text-xl hidden sm:inline">SecretNamespace</span>
           </a>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
-            {navItems.map((item) => (
+          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+            {navItems.slice(0, 4).map((item) => (
               <a
                 key={item.name}
                 href={item.href}
@@ -50,8 +60,24 @@ export function Header() {
           className="mr-2 md:hidden"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
-          <Menu className="h-5 w-5" />
+          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
+
+        {mobileMenuOpen && (
+          <div className="absolute top-14 left-0 right-0 bg-background border-b md:hidden z-50">
+            <nav className="container py-4">
+              {navItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className="block py-2 transition-colors hover:text-foreground/80 text-foreground/60"
+                >
+                  {item.name}
+                </a>
+              ))}
+            </nav>
+          </div>
+        )}
 
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
@@ -73,9 +99,13 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setDarkMode(!darkMode)}
+            onClick={toggleTheme}
           >
-            {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            {mounted && theme === "dark" ? (
+              <Sun className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
           </Button>
         </div>
       </div>
