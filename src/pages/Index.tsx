@@ -1,19 +1,29 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Header } from "@/components/Header";
+import { ArticleCard } from "@/components/ArticleCard";
+import { Sidebar } from "@/components/Sidebar";
+import { Footer } from "@/components/Footer";
+import { SubscribeCTA } from "@/components/SubscribeCTA";
 
-import { MadeWithDyad } from "@/components/made-with-dyad";
-
-const Index = () => {
+export default function Index() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">
-          Start building your amazing project here!
-        </p>
-      </div>
-      <MadeWithDyad />
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1">
+        <div className="container py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-8">
+              {[...Array(5)].map((_, i) => (
+                <ArticleCard key={i} />
+              ))}
+            </div>
+            <div className="lg:col-span-1">
+              <Sidebar />
+            </div>
+          </div>
+        </div>
+      </main>
+      <Footer />
+      <SubscribeCTA />
     </div>
   );
-};
-
-export default Index;
+}
